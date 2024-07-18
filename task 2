@@ -1,0 +1,84 @@
+/*Import necessary libraries*/
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+/*from sklearn.datasets import load_boston # Removed this import*/
+
+/*Load the California Housing dataset instead of the Boston Housing dataset*/
+from sklearn.datasets import fetch_california_housing
+housing = fetch_california_housing()
+df = pd.DataFrame(housing.data, columns=housing.feature_names)
+/*Assuming 'PRICE' is a suitable target variable in this dataset*/
+df['PRICE'] = housing.target 
+
+/*Assume the target variable is 'PRICE' and the feature variable is 'MedInc' (median income)*/
+X = df[['MedInc']] 
+y = df['PRICE']
+
+/*Split the data into training and testing sets*/
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+/*Create and train a linear regression model*/
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+/* Make predictions on the test set*/
+y_pred = model.predict(X_test)
+
+/*Evaluate the model's performance*/
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+print(f'Mean Squared Error: {mse:.2f}')
+print(f'R-squared: {r2:.2f}')
+
+/*Visualize the regression line and actual vs. predicted values*/
+plt.scatter(X_test, y_test, label='Actual values')
+plt.plot(X_test, y_pred, label='Predicted values', color='red')
+plt.xlabel('Median Income (MedInc)') 
+plt.ylabel('House Price (PRICE)')
+plt.title('Linear Regression Model')
+plt.legend()
+plt.show()
+
+/*Generate random data*/
+np.random.seed(0)
+X = 2.5 * np.random.randn(100) + 1.5  
+res = 0.5 * np.random.randn(100)       
+y = 2 + 0.3 * X + res                  
+
+/* Create a DataFrame to store our X and y values*/
+df = pd.DataFrame({'X': X, 'y': y})
+
+/* Split data*/
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+/* Reshape X arrays to be 2-dimensional for LinearRegression model*/
+X_train = X_train.reshape(-1, 1)
+X_test = X_test.reshape(-1, 1)
+
+/* Create a linear regression model*/
+model = LinearRegression()
+
+/*Fit the model*/
+model.fit(X_train, y_train)
+
+/*Make predictions*/
+y_pred = model.predict(X_test)
+
+/* Calculate metrics*/
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print('Mean Squared Error:', mse)
+print('R-squared:', r2)
+
+/* Plot outputs */
+plt.scatter(X_test, y_test, color='black')
+plt.plot(X_test, y_pred, color='blue', linewidth=3)
+plt.title('Linear Regression')
+plt.xlabel('X')
+plt.ylabel('y')
+plt.show()
